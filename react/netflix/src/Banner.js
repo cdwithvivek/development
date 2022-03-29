@@ -1,0 +1,53 @@
+import React, { useEffect, useState } from 'react'
+import axios from './axios';
+import requests from './requests';
+import './Banner.css'
+const BASE_URL = 'https://image.tmdb.org/t/p/original/';
+
+function Banner() {
+    const [movie,setMovie] = useState([]);
+    
+    useEffect(()=>{
+        async function fetchData(){
+            const request = await axios.get(requests.fetchNetflixOriginals);
+            const randomNumber =Math.floor(Math.random()*request.data.results.length)
+            setMovie(request.data.results[randomNumber]) ; // []
+        }
+        // call fetch data
+        fetchData();
+    },[])
+    
+
+    function truncate(str,n){
+        return str?.length > n ? str.substr(0,n-1) + "..." : str;
+    }
+
+
+
+  return (
+    <header>
+        <div className='banner'
+            style={{
+                backgroundSize : 'cover',
+                background: `url("${BASE_URL}${movie?.backdrop_path}")`,
+                backgroundPosition : 'center center'
+            }}
+        >
+            <div className='banner__contents'>
+            <h1 className='banner__title'>{movie?.title || movie?.name || movie?.original_name}</h1>
+            <div className='banner_buttons'>
+                <button className='banner__button'>Play</button>
+                <button className='banner__button'>MyList</button>
+            </div>
+            <h1 className='banner__description'>{truncate(movie?.overview,500)}</h1>
+            </div>
+            <div className='banner--fadeBottom'/>
+        </div>
+
+        
+
+    </header>
+  )
+}
+
+export default Banner
